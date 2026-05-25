@@ -63,3 +63,71 @@ Proximal Policy Optimization, một thuật toán policy optimization thường 
 ## DPO
 
 Direct Preference Optimization, phương pháp học trực tiếp từ preference pairs mà không cần chạy vòng RL đầy đủ với reward model riêng theo cách truyền thống.
+
+## Monte Carlo
+
+Nhóm phương pháp học value bằng cách chờ episode kết thúc rồi dùng return thật đã quan sát. Monte Carlo gần outcome thật nhưng thường variance cao và feedback đến muộn.
+
+## Temporal Difference
+
+Nhóm phương pháp học value bằng cách cập nhật sau từng bước, dùng reward vừa nhận và value ước lượng của state kế tiếp. TD học nhanh hơn Monte Carlo nhưng có bias vì bootstrap.
+
+## TD Error
+
+Mức chênh lệch giữa target một bước và ước lượng hiện tại. TD error có thể được hiểu như mức độ ngạc nhiên của agent khi quan sát reward và state tiếp theo.
+
+## SARSA
+
+Thuật toán on-policy học Q function từ chuỗi state, action, reward, next state và next action thật sự được policy chọn.
+
+## Q-learning
+
+Thuật toán off-policy học Q function bằng target có phép max trên action ở state kế tiếp. Q-learning học theo giả định tương lai sẽ chọn action tốt nhất theo Q hiện tại.
+
+## Exploration
+
+Quá trình thử hành động chưa chắc là tốt nhất để thu thập thông tin. Trong LLM systems, exploration nên diễn ra trong sandbox, offline eval, canary traffic hoặc môi trường có boundary rõ.
+
+## DQN
+
+Deep Q-Network, phương pháp dùng neural network để xấp xỉ Q function thay vì Q-table. DQN cần replay buffer và target network để giảm bất ổn.
+
+## Replay Buffer
+
+Bộ nhớ lưu experience cũ để sample lại khi training. Với LLM agents, khái niệm tương ứng là trace store có metadata đầy đủ.
+
+## Target Network
+
+Bản copy chậm của Q network dùng để tính target ổn định hơn. Ý tưởng rộng hơn là giữ evaluator, reward model hoặc reference policy đủ ổn định để feedback loop có thể debug.
+
+## Policy Gradient
+
+Nhóm phương pháp tối ưu trực tiếp policy bằng gradient của expected return. Với LLM, policy gradient gần với việc điều chỉnh xác suất token hoặc action dựa trên reward.
+
+## Advantage
+
+Độ tốt của một action so với kỳ vọng tại state hiện tại, thường viết là $A(s, a) = Q(s, a) - V(s)$.
+
+## Actor-Critic
+
+Kiến trúc trong đó actor chọn action còn critic đánh giá value hoặc advantage. Trong LLM, actor có thể là model sinh response, critic có thể là value model, reward model hoặc evaluator.
+
+## PPO
+
+Proximal Policy Optimization, thuật toán policy optimization giới hạn bước cập nhật policy bằng ratio clipping và thường dùng KL constraint trong RLHF.
+
+## DPO
+
+Direct Preference Optimization, phương pháp học trực tiếp từ chosen/rejected preference pairs mà không cần chạy vòng PPO-style RLHF đầy đủ.
+
+## Self-play
+
+Kỹ thuật agent học bằng cách tương tác với chính phiên bản của mình hoặc agent đối thủ. Trong LLM, self-play có thể dùng để tạo adversarial prompts, critique hoặc training traces.
+
+## Offline RL
+
+Học policy từ dataset có sẵn mà không tương tác online trong lúc train. Offline RL hữu ích khi exploration thật đắt hoặc nguy hiểm, nhưng phụ thuộc mạnh vào coverage của dataset.
+
+## Decision Transformer
+
+Cách nhìn RL như sequence modeling, trong đó trajectory được biểu diễn như chuỗi state, action, reward và return mong muốn.

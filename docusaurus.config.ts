@@ -135,9 +135,11 @@ const config: Config = {
           title: 'Lộ trình',
           items: [
             {label: 'Tổng quan', to: '/docs/intro'},
-            {label: 'Mental Model', to: '/docs/01-rl-mental-model/01-agent-environment-reward'},
-            {label: 'Bellman', to: '/docs/02-bellman-value-methods/01-bellman-equation'},
+            {label: 'Q-learning', to: '/docs/03-learning-from-experience/03-q-learning-sarsa-exploration'},
+            {label: 'DQN', to: '/docs/04-deep-q-learning/01-from-q-table-to-dqn'},
+            {label: 'PPO', to: '/docs/05-policy-gradient-actor-critic/03-ppo-intuition'},
             {label: 'RL cho LLM', to: '/docs/06-rl-for-llm/01-why-rl-matters-for-llm'},
+            {label: 'Production', to: '/docs/08-labs-production/03-production-rl-checklist'},
           ],
         },
         {

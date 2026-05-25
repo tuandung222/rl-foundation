@@ -52,7 +52,8 @@ Giáo trình này sẽ đi theo một đường dây có chủ ý.
 - **Phần 4:** học Deep Q-Network và các kỹ thuật ổn định khi value function là neural network.
 - **Phần 5:** học policy gradient, actor-critic, advantage và PPO.
 - **Phần 6:** nối RL sang NLP và LLM: RLHF, reward model, KL penalty, preference optimization, DPO, GRPO và agent evaluation.
-- **Phần 7:** thực hành qua môi trường nhỏ, notebook và toy RLHF pipeline.
+- **Phần 7:** mở rộng sang multi-agent, self-play, curiosity, model-based RL, offline RL và Decision Transformers.
+- **Phần 8:** thực hành qua môi trường nhỏ, toy preference optimization, agent trace evaluator và checklist production.
 
 ## Điều cần giữ trong đầu
 

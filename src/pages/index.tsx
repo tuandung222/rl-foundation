@@ -10,7 +10,12 @@ const parts = [
   ['00', 'Định hướng', 'Vì sao RL quan trọng với người làm NLP, LLM và agentic systems.', '/docs/00-orientation/01-overview'],
   ['01', 'Mental Model của RL', 'Agent, environment, reward, return, policy, value và credit assignment.', '/docs/01-rl-mental-model/01-agent-environment-reward'],
   ['02', 'Bellman và Value', 'Tư duy quy hoạch động phía sau value function, Q function và bootstrap.', '/docs/02-bellman-value-methods/01-bellman-equation'],
-  ['06', 'RL cho LLM', 'Từ RLHF, reward model, PPO tới preference optimization và agent traces.', '/docs/06-rl-for-llm/01-why-rl-matters-for-llm'],
+  ['03', 'Learning from Experience', 'Monte Carlo, Temporal Difference, SARSA, Q-learning và exploration.', '/docs/03-learning-from-experience/01-overview'],
+  ['04', 'Deep Q-Learning', 'Từ Q-table tới DQN, replay buffer, target network và failure modes.', '/docs/04-deep-q-learning/01-from-q-table-to-dqn'],
+  ['05', 'Policy Gradient', 'REINFORCE, baseline, advantage, actor-critic và PPO.', '/docs/05-policy-gradient-actor-critic/01-policy-gradient'],
+  ['06', 'RL cho LLM', 'RLHF, reward model, DPO, preference optimization và agent traces.', '/docs/06-rl-for-llm/01-why-rl-matters-for-llm'],
+  ['07', 'Advanced Topics', 'Multi-agent, self-play, curiosity, model-based RL, offline RL và Decision Transformers.', '/docs/07-advanced-topics/01-multi-agent-self-play'],
+  ['08', 'Labs và Production', 'Roadmap thực hành, reward hacking, safety, evaluation và checklist production.', '/docs/08-labs-production/01-lab-roadmap'],
 ];
 
 function HomepageHeader(): ReactNode {
@@ -22,7 +27,7 @@ function HomepageHeader(): ReactNode {
         <p className={styles.heroTagline}>{siteConfig.tagline}</p>
         <div className={styles.heroButtons}>
           <Link className={`button button--primary button--lg ${styles.heroButton}`} to="/docs/intro">Bắt đầu học</Link>
-          <Link className={`button button--secondary button--lg ${styles.heroButton}`} to="/docs/06-rl-for-llm/01-why-rl-matters-for-llm">RL cho LLM</Link>
+          <Link className={`button button--secondary button--lg ${styles.heroButton}`} to="/docs/resources/syllabus">Xem syllabus</Link>
         </div>
       </div>
     </header>
@@ -33,9 +38,9 @@ function PartGrid(): ReactNode {
   return (
     <section className={styles.gridSection}>
       <div className="container">
-        <Heading as="h2" className={styles.sectionTitle}>Giáo trình RL cho người làm NLP và LLM</Heading>
+        <Heading as="h2" className={styles.sectionTitle}>Chín phần bài giảng RL cho NLP và LLM</Heading>
         <p className={styles.sectionSubtitle}>
-          Lộ trình đi từ trực giác nền tảng tới RLHF và hệ thống LLM có hành động, được viết bằng tiếng Việt với trọng tâm là hiểu bản chất và áp dụng vào công việc.
+          Lộ trình đi từ trực giác nền tảng tới Q-learning, DQN, policy gradient, PPO, RLHF, DPO, multi-agent, offline RL và production feedback loops.
         </p>
         <div className={styles.grid}>
           {parts.map(([number, title, description, to]) => (
