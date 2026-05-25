@@ -7,8 +7,25 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
-TEXT_EXTENSIONS = {".md", ".ts", ".tsx", ".json", ".yml", ".yaml", ".css"}
+TEXT_EXTENSIONS = {".md", ".py", ".ts", ".tsx", ".json", ".yml", ".yaml", ".css"}
 IGNORED_PARTS = {"node_modules", "build", ".docusaurus", ".git", "huggingface-deep-rl-class"}
+OLD_SECTION_TERMS = ("\u0043\u1ee5m", "\u0063\u1ee5m")
+REFERENCE_ROOT = ROOT / "huggingface-deep-rl-class"
+REFERENCE_TEXT_EXTENSIONS = {".md", ".mdx"}
+
+REQUIRED_AGENT_SECTIONS = [
+    "## 1. Project overview",
+    "## 2. Repository map",
+    "## 3. Curriculum-wide content standard",
+    "## 4. Pedagogical writing style",
+    "## 5. Math, diagrams, and examples",
+    "## 6. Source material and attribution policy",
+    "## 7. Public privacy and safety constraints",
+    "## 8. Commands and verification",
+    "## 9. Completion checklist",
+    "## 10. Repo specialization: RL Foundation",
+    "## 11. Maintenance notes for future agents",
+]
 
 
 def iter_text_files() -> list[Path]:
@@ -56,12 +73,68 @@ def check_source_hygiene(errors: list[str]) -> None:
         if rel == Path("README.md"):
             continue
         text = read(path)
-        if "—" in text:
+        if "\u2014" in text:
             errors.append(f"em dash found in {rel}")
-        if "Cụm" in text or "cụm" in text:
+        if any(term in text for term in OLD_SECTION_TERMS):
             errors.append(f"old section wording found in {rel}")
         if path.is_relative_to(DOCS) and re.search(r"README rỗng|STYLING_WRITING|private user instructions", text, re.I):
             errors.append(f"public/internal wording found in {rel}")
+
+
+def normalize_reference_line(line: str) -> str:
+    return re.sub(r"\s+", " ", line.strip())
+
+
+def collect_reference_lines() -> set[str]:
+    if not REFERENCE_ROOT.exists():
+        return set()
+    reference_lines: set[str] = set()
+    for path in REFERENCE_ROOT.rglob("*"):
+        if not path.is_file() or path.suffix not in REFERENCE_TEXT_EXTENSIONS:
+            continue
+        for raw_line in read(path).splitlines():
+            line = normalize_reference_line(raw_line)
+            if len(line) < 120:
+                continue
+            if line.startswith(("---", "import ", "export ", "<", "![")):
+                continue
+            reference_lines.add(line)
+    return reference_lines
+
+
+def check_reference_copying(errors: list[str]) -> None:
+    reference_lines = collect_reference_lines()
+    if not reference_lines:
+        return
+    for path in DOCS.rglob("*.md"):
+        for line_number, raw_line in enumerate(read(path).splitlines(), start=1):
+            line = normalize_reference_line(raw_line)
+            if len(line) >= 120 and line in reference_lines:
+                errors.append(
+                    f"possible copied reference line in {path.relative_to(ROOT)}:{line_number}"
+                )
+
+
+def check_agent_guide(errors: list[str]) -> None:
+    agent = ROOT / "AGENT.md"
+    if not agent.exists():
+        errors.append("AGENT.md is missing")
+        return
+    text = read(agent)
+    for section in REQUIRED_AGENT_SECTIONS:
+        if section not in text:
+            errors.append(f"AGENT.md missing required section: {section}")
+    required_phrases = [
+        "README.md` must remain empty",
+        "Do not copy paragraphs from the reference",
+        "Public chapters must be original Vietnamese teaching material",
+        "noindex,nofollow,noarchive,nosnippet",
+        "sitemap",
+        "npm run verify",
+    ]
+    for phrase in required_phrases:
+        if phrase not in text:
+            errors.append(f"AGENT.md missing required guidance phrase: {phrase}")
 
 
 def check_sidebar_doc_ids(errors: list[str]) -> None:
@@ -90,6 +163,8 @@ def main() -> int:
     check_readme_empty(errors)
     check_privacy_controls(errors)
     check_source_hygiene(errors)
+    check_reference_copying(errors)
+    check_agent_guide(errors)
     check_sidebar_doc_ids(errors)
     check_absolute_doc_links(errors)
 
