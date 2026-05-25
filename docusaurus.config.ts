@@ -15,9 +15,9 @@ const config: Config = {
   },
 
   url: 'https://tuandung222.github.io',
-  baseUrl: '/reinforcement-learning-foundation/',
+  baseUrl: '/rl-foundation/',
   organizationName: 'tuandung222',
-  projectName: 'reinforcement-learning-foundation',
+  projectName: 'rl-foundation',
   trailingSlash: false,
   onBrokenLinks: 'warn',
 
@@ -65,7 +65,7 @@ const config: Config = {
         docs: {
           sidebarPath: './sidebars.ts',
           routeBasePath: 'docs',
-          editUrl: 'https://github.com/tuandung222/reinforcement-learning-foundation/edit/main/',
+          editUrl: 'https://github.com/tuandung222/rl-foundation/edit/main/',
           remarkPlugins: [remarkMath],
           rehypePlugins: [rehypeKatex],
           showLastUpdateTime: false,
@@ -122,7 +122,7 @@ const config: Config = {
           position: 'left',
         },
         {
-          href: 'https://github.com/tuandung222/reinforcement-learning-foundation',
+          href: 'https://github.com/tuandung222/rl-foundation',
           label: 'GitHub',
           position: 'right',
         },
