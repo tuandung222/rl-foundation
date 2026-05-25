@@ -16,6 +16,7 @@ const parts = [
   ['06', 'RL cho LLM', 'RLHF, reward model, DPO, preference optimization và agent traces.', '/docs/06-rl-for-llm/01-why-rl-matters-for-llm'],
   ['07', 'Advanced Topics', 'Multi-agent, self-play, curiosity, model-based RL, offline RL và Decision Transformers.', '/docs/07-advanced-topics/01-multi-agent-self-play'],
   ['08', 'Labs và Production', 'Roadmap thực hành, reward hacking, safety, evaluation và checklist production.', '/docs/08-labs-production/01-lab-roadmap'],
+  ['09', 'Research Math Foundations', 'Bellman operators, convergence, stochastic approximation, PPO, DPO, offline RL và giới hạn sequence modeling.', '/docs/09-research-math-foundations/01-bellman-operators-and-convergence'],
 ];
 
 function HomepageHeader(): ReactNode {
@@ -38,9 +39,9 @@ function PartGrid(): ReactNode {
   return (
     <section className={styles.gridSection}>
       <div className="container">
-        <Heading as="h2" className={styles.sectionTitle}>Chín phần bài giảng RL cho NLP và LLM</Heading>
+        <Heading as="h2" className={styles.sectionTitle}>Mười phần bài giảng RL cho NLP và LLM</Heading>
         <p className={styles.sectionSubtitle}>
-          Lộ trình đi từ trực giác nền tảng tới Q-learning, DQN, policy gradient, PPO, RLHF, DPO, multi-agent, offline RL và production feedback loops.
+          Lộ trình đi từ trực giác nền tảng tới Q-learning, DQN, policy gradient, PPO, RLHF, DPO, offline RL, production feedback loops và nền tảng toán học cho research.
         </p>
         <div className={styles.grid}>
           {parts.map(([number, title, description, to]) => (

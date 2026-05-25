@@ -48,6 +48,30 @@ Trong LLM, nếu ta train một critic hoặc reward model liên tục từ dữ
 
 DQN nhắc ta rằng neural network không tự làm RL ổn định. Ngược lại, neural network làm RL mạnh hơn nhưng cũng dễ bất ổn hơn. Với LLM systems, bài học này càng quan trọng vì model lớn, action space lớn, reward nhiễu và chi phí update cao.
 
+## Ghi chú nghiên cứu: DQN loss và semi-gradient
+
+DQN biến Bellman update thành một bài toán tối ưu loss. Với một transition $(s, a, r, s')$, target thường là:
+
+$$
+y = r + \gamma \max_{a'} Q(s', a'; \theta^-)
+$$
+
+Trong đó $\theta^-$ là tham số của target network. Loss của Q network là:
+
+$$
+L(\theta) = \mathbb{E}_{(s,a,r,s') \sim D} [(y - Q(s, a; \theta))^2]
+$$
+
+Điểm dễ bị bỏ qua là target $y$ được xem như hằng số khi lấy gradient theo $\theta$. Ta không backpropagate qua phép $\max$ và target network trong cùng update. Vì vậy gradient thực tế là semi-gradient:
+
+$$
+\nabla_\theta L(\theta) = \mathbb{E}[-2(y - Q(s,a;\theta)) \nabla_\theta Q(s,a;\theta)]
+$$
+
+Semi-gradient là một nhượng bộ thực dụng. Nếu target cũng thay đổi theo cùng tham số đang update, bài toán trở thành chasing a moving target mạnh hơn nữa. Target network làm chậm chuyển động của target, còn replay buffer làm giảm correlation của dữ liệu. Hai kỹ thuật này không làm DQN trở thành supervised learning thông thường, nhưng làm feedback loop đủ ổn định để huấn luyện trong nhiều môi trường.
+
+Với học viên research, điều quan trọng là không đọc DQN loss như một MSE bình thường. Label trong supervised learning thường đến từ bên ngoài và cố định. Target trong DQN đến từ chính mô hình RL. Đây là khác biệt bản chất giữa function approximation trong RL và regression thông thường.
+
 ## Tóm tắt
 
 DQN thay Q-table bằng neural network để xử lý state space lớn. Nhưng deep RL không chỉ là thêm deep learning vào Q-learning. Vì target di chuyển và dữ liệu có correlation, DQN cần replay buffer và target network để ổn định. Với LLM, đây là bài học về mọi hệ thống học từ feedback loop: phải quản lý data distribution, evaluator drift và target stability.

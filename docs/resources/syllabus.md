@@ -19,6 +19,7 @@ Tài liệu này là bản đồ phát triển giáo trình Reinforcement Learni
 | Phần 6 | RL cho NLP và LLM | RLHF, reward model, DPO, preference optimization, agent traces, credit assignment |
 | Phần 7 | Advanced Topics | Multi-agent RL, self-play, curiosity, model-based RL, offline RL, Decision Transformers |
 | Phần 8 | Labs và Production | Gymnasium labs, toy preference optimization, trace evaluator, safety, monitoring, rollout |
+| Phần 9 | Research Mathematical Foundations | Bellman operators, contraction, stochastic approximation, policy gradient theorem, PPO, DPO, offline RL support mismatch |
 
 ## Ánh xạ từ Hugging Face Deep RL Class
 
@@ -32,6 +33,7 @@ Tài liệu này là bản đồ phát triển giáo trình Reinforcement Learni
 | Unit 8, PPO | Phần 5 và Phần 6, giải thích clipping, KL penalty và policy drift |
 | Unit 7, Multi-agent | Phần 7, nối multi-agent RL với planner, coder, reviewer và evaluator agents |
 | Bonus topics | Phần 7 và Phần 8, gồm curiosity, offline RL, Decision Transformers, RLHF và labs |
+| Research extensions | Phần 9, đào sâu operator view, convergence, stochastic approximation, surrogate objectives và offline RL assumptions |
 
 ## Nguyên tắc thiết kế bài học
 
@@ -63,3 +65,5 @@ Nếu bạn mới học RL, hãy đọc Phần 0 đến Phần 3 thật chậm. 
 Nếu bạn đã biết RL nhưng muốn nối sang LLM, hãy đọc nhanh Phần 1 đến Phần 5, rồi tập trung vào Phần 6, Phần 7 và Phần 8.
 
 Nếu bạn đang xây agent production, hãy đọc Phần 1, Phần 6 và Phần 8 trước, sau đó quay lại thuật toán để hiểu sâu các failure modes.
+
+Nếu bạn là học viên research, PhD hoặc research scientist, hãy học Phần 1 đến Phần 5 để nắm trực giác thuật toán, đọc Phần 6 để hiểu cầu nối LLM, rồi học Phần 9 như lớp toán học chuyên sâu. Không nên bắt đầu từ Phần 9 nếu chưa hiểu return, Bellman target, TD error, policy gradient và advantage ở mức trực giác.

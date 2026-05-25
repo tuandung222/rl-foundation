@@ -54,6 +54,32 @@ Nếu bạn chỉ fine-tune LLM từ preference pairs đơn giản, DPO hoặc c
 
 PPO dạy một nguyên tắc chung: trong hệ thống hành vi phức tạp, cải thiện từng bước nhỏ có kiểm soát thường an toàn hơn tối ưu mạnh theo một proxy chưa hoàn hảo.
 
+## Ghi chú nghiên cứu: từ trust region tới clipped surrogate
+
+PPO có thể được hiểu như một biến thể thực dụng của ý tưởng trust region. TRPO cố gắng tối đa hóa surrogate objective nhưng ràng buộc policy mới không cách policy cũ quá xa theo KL:
+
+$$
+\max_\theta \; \mathbb{E}_t[r_t(\theta) \hat{A}_t] \quad \text{subject to} \quad \mathbb{E}_t[\text{KL}(\pi_{old}(\cdot \mid s_t) || \pi_\theta(\cdot \mid s_t))] \leq \delta
+$$
+
+PPO clipping thay bài toán constrained optimization khó bằng objective dễ tối ưu hơn:
+
+$$
+L^{CLIP}(\theta) = \mathbb{E}_t[\min(r_t(\theta)\hat{A}_t, \text{clip}(r_t(\theta), 1 - \epsilon, 1 + \epsilon)\hat{A}_t)]
+$$
+
+Điểm tinh tế là clipping phụ thuộc vào dấu của advantage. Nếu $\hat{A}_t > 0$, tăng xác suất action là tốt, nhưng PPO không cho lợi ích objective tăng thêm khi ratio vượt quá $1 + \epsilon$. Nếu $\hat{A}_t < 0$, giảm xác suất action là tốt, nhưng PPO không cho lợi ích tăng thêm khi ratio xuống quá thấp dưới $1 - \epsilon$.
+
+Clipped surrogate không phải hard constraint tuyệt đối trên KL. KL vẫn có thể tăng nếu optimizer, batch, entropy, reward scale hoặc nhiều epoch update làm policy drift. Vì vậy nhiều triển khai PPO vẫn log KL, dùng early stopping theo KL, hoặc thêm KL penalty.
+
+Với LLM, ratio thường được tính từ log-probability của cả chuỗi hoặc từng token:
+
+$$
+\log r(\theta) = \log \pi_\theta(y \mid x) - \log \pi_{old}(y \mid x)
+$$
+
+Vì response dài có tổng log-probability rất âm, cách normalize theo token, cách mask token, length penalty và reward shaping đều ảnh hưởng mạnh tới training. Đây là lý do PPO trong RLHF không chỉ là thuật toán, mà là cả một hệ thống kỹ thuật với reward normalization, KL control, value learning, batching và careful evaluation.
+
 ## Tóm tắt
 
 PPO giới hạn bước cập nhật policy bằng ratio clipping và thường đi cùng KL constraint trong RLHF. Ý tưởng cốt lõi là cải thiện policy nhưng không để policy mới đi quá xa policy cũ hoặc reference model. Với LLM, PPO là bài học về ổn định, không chỉ là thuật toán: reward model có thể sai, policy có thể drift, và mọi update cần guardrail.

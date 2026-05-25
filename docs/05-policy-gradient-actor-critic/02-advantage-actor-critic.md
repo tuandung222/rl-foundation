@@ -46,6 +46,26 @@ Nếu critic đánh giá cao câu trả lời dài, actor sẽ học dài dòng.
 
 Một hệ thống tốt không chỉ hỏi average reward tăng không. Nó hỏi reward tăng ở slice nào, có trade-off safety không, có reward hacking không, có drift khỏi reference policy không.
 
+## Ghi chú nghiên cứu: TD residual và Generalized Advantage Estimation
+
+Trong actor-critic, critic thường không trực tiếp cho ta advantage thật. Ta phải ước lượng nó. Một tín hiệu cơ bản là TD residual:
+
+$$
+\delta_t^V = r_{t+1} + \gamma V(s_{t+1}) - V(s_t)
+$$
+
+Nếu $V$ chính xác, TD residual là một estimator một bước cho advantage. Nhưng nếu chỉ dùng một bước, estimator có thể bias vì phụ thuộc mạnh vào value estimate. Nếu dùng return dài hơn, variance tăng. Generalized Advantage Estimation, thường viết là GAE, tạo một cầu nối giữa hai cực đó:
+
+$$
+\hat{A}_t^{GAE(\gamma,\lambda)} = \sum_{l=0}^{\infty} (\gamma \lambda)^l \delta_{t+l}^V
+$$
+
+Khi $\lambda$ nhỏ, advantage dựa nhiều vào TD residual ngắn, variance thấp hơn nhưng bias có thể cao hơn. Khi $\lambda$ gần 1, advantage nhìn xa hơn, gần Monte Carlo hơn, bias thấp hơn nhưng variance cao hơn.
+
+Đọc theo nghĩa hệ thống: GAE là một cách kiểm soát độ tin vào critic. Nếu critic khá tốt, ta có thể dùng nhiều bootstrap để giảm nhiễu. Nếu critic yếu, bootstrap quá mạnh có thể truyền lỗi của critic vào actor.
+
+Trong RLHF, value head đóng vai trò critic cho các prefix hoặc response. Nếu value head đánh giá sai prompt khó, advantage sẽ sai theo. Khi đó policy có thể tăng xác suất token hoặc response không thật sự tốt. Vì vậy, debug actor-critic không chỉ nhìn policy loss, mà phải nhìn cả value loss, explained variance, reward distribution, KL, length bias và per-slice behavior.
+
 ## Tóm tắt
 
 Advantage đo action tốt hơn kỳ vọng của state bao nhiêu. Actor-critic dùng actor để hành động và critic để đánh giá, nhờ đó policy gradient bớt nhiễu. Với LLM, actor là model hoặc agent policy, critic có thể là value model, reward model hoặc evaluator. Nhưng critic cũng có bias, nên cần versioning, held-out eval và kiểm tra reward hacking.

@@ -52,6 +52,33 @@ Chiến lược đơn giản nhất là epsilon-greedy. Với xác suất $\epsi
 
 Trong LLM product, exploration cần được thiết kế khác. Ta không muốn random action trong production một cách vô trách nhiệm. Thay vào đó, ta có thể exploration trong offline sandbox, A/B test nhỏ, shadow mode, hoặc constrained decoding. Exploration tốt là exploration có ranh giới.
 
+## Ghi chú nghiên cứu: on-policy, off-policy và điều kiện hội tụ
+
+SARSA và Q-learning thường được dạy bằng hai update equation, nhưng ở mức research ta cần nhìn chúng qua quan hệ giữa behavior policy và target policy.
+
+Behavior policy là policy sinh dữ liệu. Target policy là policy mà ta muốn học hoặc đánh giá. Với SARSA, hai policy này về cơ bản trùng nhau: agent học giá trị của hành vi mà chính nó đang thực hiện. Nếu behavior policy có exploration, value học được cũng phản ánh rủi ro do exploration đó tạo ra.
+
+Với Q-learning, target policy là greedy policy ngầm định bởi $Q$, còn behavior policy có thể vẫn exploration. Đây là lý do Q-learning là off-policy. Nó học về một policy khác policy đang sinh dữ liệu.
+
+Trong tabular setting, Q-learning có kết quả hội tụ cổ điển nếu một số điều kiện được thỏa:
+
+- MDP hữu hạn.
+- $0 \leq \gamma < 1$.
+- Mọi state-action pair liên quan được thăm vô hạn lần.
+- Learning rate thỏa điều kiện Robbins-Monro:
+
+$$
+\sum_t \alpha_t(s,a) = \infty, \qquad \sum_t \alpha_t(s,a)^2 < \infty
+$$
+
+Các điều kiện này nói bằng lời rằng agent phải tiếp tục học đủ lâu, nhưng step size phải giảm đủ nhanh để noise không làm ước lượng dao động mãi.
+
+SARSA thường được phân tích với điều kiện GLIE, viết đầy đủ là greedy in the limit with infinite exploration. Nghĩa là agent vẫn exploration đủ nhiều để học, nhưng về dài hạn policy tiến dần tới greedy. Nếu giảm $\epsilon$ quá nhanh, agent có thể không khám phá đủ. Nếu không giảm, policy cuối cùng vẫn nhiễu.
+
+Khi chuyển sang function approximation, đặc biệt là neural network, các bảo đảm này yếu đi rất nhiều. Một update trên một state-action pair có thể thay đổi Q ở nhiều vùng state khác. Off-policy data có thể nằm ở distribution khác distribution mà greedy policy sẽ đi tới. Đây là bước đầu tiên để hiểu vì sao deadly triad xuất hiện trong deep RL.
+
+Với LLM logs, câu hỏi tương ứng là: dữ liệu này đến từ policy nào? Model hiện tại, model cũ, human annotator, synthetic generator, hay mixture nhiều nguồn? Nếu ta học một policy mới từ logs cũ, ta đang làm off-policy learning theo nghĩa rộng. Khi policy mới đi vào context mà logs không bao phủ, value hoặc reward estimate có thể không đáng tin.
+
 ## Tóm tắt
 
 SARSA cập nhật theo action tiếp theo mà policy thật sự chọn, nên là on-policy và phản ánh rủi ro của hành vi hiện tại. Q-learning cập nhật theo action tốt nhất giả định ở state kế tiếp, nên là off-policy và thường hướng tới policy tối ưu. Exploration giúp agent không mắc kẹt với hành vi đang biết, nhưng với LLM systems, exploration phải được kiểm soát bằng sandbox, traffic nhỏ và safety boundary.

@@ -54,6 +54,28 @@ Khi một deep RL hoặc LLM feedback loop bất ổn, đừng chỉ hỏi learn
 - Có so sánh với baseline đơn giản không?
 - Có kiểm tra nhiều seed hoặc nhiều slices dữ liệu không?
 
+## Ghi chú nghiên cứu: projected Bellman equation và deadly triad
+
+Trong tabular setting, Bellman operator có thể là contraction trên toàn bộ không gian value functions. Nhưng với function approximation, ta chỉ được phép biểu diễn value trong một họ hàm nhất định, ví dụ $V_\theta$ hoặc $Q_\theta$. Khi Bellman update tạo ra một hàm mới nằm ngoài họ hàm đó, ta phải chiếu nó trở lại không gian biểu diễn được.
+
+Ý tưởng này thường được mô tả bằng projected Bellman equation:
+
+$$
+V_\theta = \Pi T^\pi V_\theta
+$$
+
+Trong đó $\Pi$ là phép chiếu về không gian function approximation. Vấn đề là phép chiếu phụ thuộc vào distribution của dữ liệu, còn Bellman operator phụ thuộc vào dynamics và policy. Khi dữ liệu off-policy, distribution dùng để chiếu có thể khác distribution mà target policy thật sự quan tâm.
+
+Deadly triad có thể được đọc lại bằng ngôn ngữ này:
+
+- Function approximation giới hạn không gian value và buộc ta chiếu.
+- Bootstrapping dùng value estimate hiện tại để tạo target.
+- Off-policy learning làm distribution của dữ liệu khác distribution của policy đang học.
+
+Ba yếu tố này có thể làm update không còn giống một contraction ổn định. Đây là lý do một thuật toán nhìn rất hợp lý trên giấy có thể divergence trong thực nghiệm.
+
+Với LLM reward models và critics, projected Bellman equation là một lời nhắc quan trọng. Model chỉ biểu diễn được một family scoring functions. Data logs chỉ phủ một số vùng behavior. Nếu ta update policy để đi vào vùng mới, critic có thể extrapolate bằng pattern sai. Reward hacking thường bắt đầu từ vùng mà critic hoặc reward model phải đoán ngoài data support.
+
 ## Tóm tắt
 
 DQN và deep RL dễ bất ổn vì neural network, bootstrapping và off-policy data tạo feedback loop khó kiểm soát. Overestimation, non-stationarity và reward hacking là các lỗi rất thực tế. Với LLM systems, những lỗi này xuất hiện dưới dạng evaluator bias, reward model exploitation, trace distribution shift và metric tăng nhưng trải nghiệm thật giảm. Học deep RL là học cách tôn trọng feedback loop.

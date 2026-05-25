@@ -101,6 +101,18 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: 'Phần 9: Research Mathematical Foundations',
+      link: {type: 'doc', id: '09-research-math-foundations/01-bellman-operators-and-convergence'},
+      collapsed: false,
+      items: [
+        '09-research-math-foundations/01-bellman-operators-and-convergence',
+        '09-research-math-foundations/02-td-control-and-function-approximation',
+        '09-research-math-foundations/03-policy-gradient-ppo-dpo',
+        '09-research-math-foundations/04-offline-rl-and-sequence-modeling',
+      ],
+    },
+    {
+      type: 'category',
       label: 'Tài nguyên',
       collapsed: true,
       items: [

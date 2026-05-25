@@ -42,6 +42,36 @@ SFT nói: hãy bắt chước response mẫu. DPO nói: hãy ưu tiên response 
 
 Không có phương pháp nào luôn thắng. Nếu có demonstrations chất lượng cao, SFT rất mạnh. Nếu có preference pairs tốt, DPO hiệu quả. Nếu cần tối ưu outcome dài hạn trong environment tương tác, PPO hoặc các phương pháp RL khác có thể phù hợp hơn.
 
+## Ghi chú nghiên cứu: DPO từ KL-regularized RL
+
+Một cách hiểu DPO là bắt đầu từ objective RL có KL regularization. Với mỗi prompt $x$, ta muốn tối đa hóa reward nhưng không để policy đi quá xa reference policy:
+
+$$
+\max_\pi \; \mathbb{E}_{y \sim \pi(\cdot \mid x)}[r(x,y)] - \beta \text{KL}(\pi(\cdot \mid x) || \pi_{ref}(\cdot \mid x))
+$$
+
+Nghiệm tối ưu của bài toán này có dạng:
+
+$$
+\pi^*(y \mid x) = \frac{1}{Z(x)} \pi_{ref}(y \mid x) \exp\left(\frac{1}{\beta} r(x,y)\right)
+$$
+
+Sắp xếp lại, ta có thể biểu diễn reward theo policy tối ưu và reference policy:
+
+$$
+r(x,y) = \beta \log \frac{\pi^*(y \mid x)}{\pi_{ref}(y \mid x)} + \beta \log Z(x)
+$$
+
+Trong preference pair, hằng số $\log Z(x)$ bị triệt tiêu khi lấy hiệu reward giữa $y_w$ và $y_l$. Vì vậy, thay vì học reward model riêng rồi tối ưu PPO, DPO trực tiếp tối ưu policy sao cho log-ratio giữa chosen và rejected phù hợp với preference:
+
+$$
+\mathcal{L}_{DPO}(\theta) = -\log \sigma\left(\beta\left[\log \frac{\pi_\theta(y_w \mid x)}{\pi_{ref}(y_w \mid x)} - \log \frac{\pi_\theta(y_l \mid x)}{\pi_{ref}(y_l \mid x)}\right]\right)
+$$
+
+Công thức này cho thấy DPO không phải một mẹo supervised learning đơn giản. Nó là một cách tái tham số hóa một bài toán KL-regularized preference optimization dưới một số giả định.
+
+Các giả định đó rất quan trọng. DPO phù hợp khi preference pair phản ánh lựa chọn giữa response hoàn chỉnh, reference policy có ý nghĩa, và bài toán không cần exploration online phức tạp. Nếu agent phải tương tác nhiều bước, action ảnh hưởng state tương lai, hoặc reward đến từ tool outcome dài hạn, DPO có thể vẫn hữu ích cho một phần pipeline nhưng không thay thế toàn bộ RL.
+
 ## Tóm tắt
 
 DPO học trực tiếp từ preference pairs và làm đơn giản hóa nhiều pipeline alignment. Nó rất hữu ích cho LLM fine-tuning khi dữ liệu là chosen/rejected responses. Nhưng DPO không loại bỏ nhu cầu hiểu RL. Khi bài toán có trajectory dài, tool use, exploration, reward phức hợp hoặc outcome động, ta vẫn cần policy, reward, rollout, credit assignment và constraint.

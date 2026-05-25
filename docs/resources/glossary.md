@@ -131,3 +131,44 @@ Học policy từ dataset có sẵn mà không tương tác online trong lúc tr
 ## Decision Transformer
 
 Cách nhìn RL như sequence modeling, trong đó trajectory được biểu diễn như chuỗi state, action, reward và return mong muốn.
+
+
+## Bellman Operator
+
+Operator biến một value function hiện tại thành value function mới bằng reward một bước cộng với discounted future value. Cách nhìn operator giúp phân tích fixed point, contraction và convergence của value iteration.
+
+## Contraction Mapping
+
+Ánh xạ làm khoảng cách giữa hai điểm giảm theo một hệ số nhỏ hơn 1. Trong finite discounted MDP, Bellman operators là contraction trong chuẩn vô cực khi $\gamma < 1$, giúp giải thích vì sao iterative evaluation hội tụ.
+
+## Stochastic Approximation
+
+Khung toán học cho các update dùng sample nhiễu để tiến dần tới nghiệm của một phương trình kỳ vọng. TD learning và Q-learning tabular có thể được hiểu như stochastic approximation của Bellman fixed point.
+
+## Robbins-Monro Conditions
+
+Điều kiện thường dùng cho learning rate trong stochastic approximation: tổng step size phải vô hạn, nhưng tổng bình phương step size phải hữu hạn. Điều này cân bằng giữa tiếp tục học đủ lâu và kiểm soát noise.
+
+## Semi-gradient
+
+Gradient trong đó target được xem như hằng số dù target có thể được tạo từ model liên quan. DQN dùng semi-gradient khi tối ưu Bellman error với target network.
+
+## Projected Bellman Equation
+
+Phương trình xuất hiện khi Bellman update tạo ra value function ngoài không gian function approximation, nên phải chiếu lại vào không gian biểu diễn được. Đây là cách nhìn quan trọng để hiểu instability khi dùng function approximation.
+
+## GAE
+
+Generalized Advantage Estimation, kỹ thuật ước lượng advantage bằng tổng có trọng số của các TD residual. GAE điều chỉnh bias-variance qua tham số $\lambda$.
+
+## Bradley-Terry Model
+
+Mô hình xác suất cho pairwise preference, thường dùng trong reward model training. Nó mô hình hóa xác suất response được chọn dựa trên hiệu reward giữa response được chọn và response bị loại.
+
+## Support Mismatch
+
+Tình huống policy mới chọn action mà dataset offline gần như không bao phủ. Đây là nguồn chính của extrapolation error trong offline RL và learning from logs.
+
+## Conservative Objective
+
+Objective được thiết kế để tránh quá lạc quan ở vùng thiếu dữ liệu, ví dụ phạt Q value của action ngoài data support hoặc ràng buộc policy mới gần behavior policy.

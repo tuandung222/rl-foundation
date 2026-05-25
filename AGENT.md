@@ -209,6 +209,7 @@ Maintain the course as a coherent path:
 - Phần 6: RLHF, reward model, DPO, preference optimization, agent traces, credit assignment.
 - Phần 7: multi-agent RL, self-play, curiosity, model-based RL, offline RL, Decision Transformers.
 - Phần 8: labs, reward hacking, safety, production checklists.
+- Phần 9: research mathematical foundations, Bellman operators, convergence, stochastic approximation, policy gradient theorem, PPO, DPO, offline RL assumptions, Decision Transformer limits.
 
 ### Misconceptions to actively prevent
 

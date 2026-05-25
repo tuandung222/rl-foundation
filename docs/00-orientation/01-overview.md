@@ -54,6 +54,7 @@ Giáo trình này sẽ đi theo một đường dây có chủ ý.
 - **Phần 6:** nối RL sang NLP và LLM: RLHF, reward model, KL penalty, preference optimization, DPO, GRPO và agent evaluation.
 - **Phần 7:** mở rộng sang multi-agent, self-play, curiosity, model-based RL, offline RL và Decision Transformers.
 - **Phần 8:** thực hành qua môi trường nhỏ, toy preference optimization, agent trace evaluator và checklist production.
+- **Phần 9:** đào sâu nền tảng toán học cho research: Bellman operators, convergence, stochastic approximation, policy gradient theorem, PPO, DPO, offline RL và Decision Transformers.
 
 ## Điều cần giữ trong đầu
 

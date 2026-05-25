@@ -140,6 +140,7 @@ const config: Config = {
             {label: 'PPO', to: '/docs/05-policy-gradient-actor-critic/03-ppo-intuition'},
             {label: 'RL cho LLM', to: '/docs/06-rl-for-llm/01-why-rl-matters-for-llm'},
             {label: 'Production', to: '/docs/08-labs-production/03-production-rl-checklist'},
+            {label: 'Research Math', to: '/docs/09-research-math-foundations/01-bellman-operators-and-convergence'},
           ],
         },
         {

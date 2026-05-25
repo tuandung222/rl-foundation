@@ -34,6 +34,18 @@ Model-based RL hữu ích khi interaction thật đắt hoặc nguy hiểm, như
 
 Với LLM systems, ba hướng này thường kết hợp. Ta có logs offline, dùng LLM làm simulator một phần, train model trên traces, rồi kiểm chứng bằng eval và rollout có kiểm soát.
 
+## Ghi chú nghiên cứu: support mismatch và conservative learning trong offline RL
+
+Offline RL khó hơn supervised imitation vì policy mới có thể chọn action mà dataset không bao phủ. Giả sử dataset được sinh bởi behavior policy $\mu(a \mid s)$, còn policy ta muốn học là $\pi(a \mid s)$. Nếu tồn tại action mà $\pi(a \mid s)$ cao nhưng $\mu(a \mid s)$ gần 0, ta đang yêu cầu value function dự đoán ngoài vùng dữ liệu.
+
+Đây là support mismatch. Về trực giác, model đang nói về một hành động mà nó hầu như chưa từng thấy trong state đó. Nếu dùng Q-learning offline, phép $\max_a Q(s,a)$ có thể chọn đúng những action bị overestimate ngoài support. Lỗi extrapolation sau đó bị bootstrapping khuếch đại.
+
+Nhiều thuật toán offline RL hiện đại vì vậy thêm tính bảo thủ. Một số phương pháp phạt Q value của action ngoài data. Một số phương pháp ràng buộc policy mới ở gần behavior policy. Một số phương pháp học uncertainty để tránh tin vào vùng không có coverage.
+
+Với LLM logs, support mismatch rất thực tế. Nếu logs chỉ chứa agent không bao giờ gọi một tool mới, ta không thể kết luận chắc tool đó tốt hay xấu từ logs. Nếu logs đến từ model cũ không biết kỹ thuật mới, offline learning có thể đánh giá thấp hành vi mà model mới có thể làm tốt. Ngược lại, nếu policy mới sinh chain hành động chưa từng có trong logs, evaluator học từ logs có thể chấm sai.
+
+Decision Transformer cũng chịu giới hạn tương tự. Nó giỏi bắt chước trajectory trong data và condition theo return mong muốn, nhưng nếu yêu cầu return vượt xa vùng data, model có thể sinh chuỗi trông hợp lý nhưng không được environment thật bảo đảm. Sequence modeling mạnh, nhưng không xóa bỏ câu hỏi coverage, exploration và verification.
+
 ## Tóm tắt
 
 Model-based RL dùng model của environment để planning. Offline RL học từ dataset có sẵn nhưng đối mặt với coverage và extrapolation error. Decision Transformers biến trajectory thành sequence modeling problem. Đây là các hướng rất gần với NLP/LLM, nhưng vẫn cần hiểu giới hạn: dữ liệu quyết định vùng policy có thể tin, simulator có thể sai, và sequence prediction không thay thế feedback thật.

@@ -40,6 +40,26 @@ Với chatbot một lượt, reward model chấm response. Với agent, ta nên 
 
 Nếu chỉ chấm final answer, agent có thể học che giấu quá trình xấu. Một coding agent có thể tạo patch đúng nhưng sửa quá rộng. Một research agent có thể trả lời hay nhưng dùng source không đáng tin. Một support agent có thể giải quyết ticket nhưng vi phạm policy riêng tư. Trace-level reward giúp ta đánh giá hành vi, không chỉ kết quả.
 
+## Ghi chú nghiên cứu: Bradley-Terry reward model và ambiguity của reward
+
+Reward model trong RLHF thường được huấn luyện từ preference pairs bằng một mô hình xác suất kiểu Bradley-Terry. Với prompt $x$, response được chọn $y_w$ và response bị loại $y_l$, ta giả định:
+
+$$
+P(y_w \succ y_l \mid x) = \sigma(r_\phi(x, y_w) - r_\phi(x, y_l))
+$$
+
+Trong đó $r_\phi$ là reward model và $\sigma$ là sigmoid. Loss thường là:
+
+$$
+\mathcal{L}(\phi) = -\log \sigma(r_\phi(x, y_w) - r_\phi(x, y_l))
+$$
+
+Đọc theo nghĩa đời thường: reward model không cần biết điểm tuyệt đối của từng response. Nó chỉ cần làm cho response được chọn có score cao hơn response bị loại.
+
+Nhưng điều này tạo ra vài hệ quả research quan trọng. Thứ nhất, reward chỉ được xác định tương đối. Nếu cộng cùng một hằng số vào mọi reward cho cùng prompt, preference probability không đổi. Thứ hai, scale của reward ảnh hưởng mạnh tới policy optimization phía sau. Reward quá lớn có thể làm PPO update mạnh, reward quá nhỏ làm tín hiệu yếu. Thứ ba, preference data có noise, disagreement và bias annotator, nên reward model học một proxy có uncertainty.
+
+Với research scientist, câu hỏi không chỉ là reward model accuracy bao nhiêu. Ta cần hỏi calibration ra sao, uncertainty ở vùng nào, reward có tương quan với human eval ngoài mẫu không, reward có bị length bias không, và policy optimization có đẩy model vào vùng reward model chưa được train không.
+
 ## Tóm tắt
 
 RLHF chuyển human preference thành reward model rồi dùng reward đó để tối ưu policy. Pipeline này mạnh nhưng dễ lệch nếu preference data, reward model hoặc constraint kém. Với LLM systems, reward model là proxy có bias, không phải chân lý. Với agent, cần đánh giá trace chứ không chỉ final answer.
